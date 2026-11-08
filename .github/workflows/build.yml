@@ -8,6 +8,13 @@
 # - uploads per-ABI APKs + universal APK as artifacts
 # NOTE: this file must be added via the GitHub web UI — the API token used
 # for syncing lacks `workflow` scope and cannot push .github/ contents.
+# FIX 2026-11-08: android-actions/setup-android@v3 REMOVED — its default
+# `packages: tools platform-tools` runs `sdkmanager tools`, and Google has
+# removed the legacy `tools` package from the SDK repo ("Failed to find
+# package 'tools'", exit 1, run #1). The ubuntu-24.04 runner already ships
+# a full Android SDK, so the step below just accepts licenses and makes
+# sure platforms;android-35 + build-tools;35.0.0 (AGP 8.8.0, compileSdk 35)
+# are present via the preinstalled cmdline-tools sdkmanager.
 
 name: Build Spider Proxy Finder APK
 
@@ -25,13 +32,17 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup Java
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v5
       with:
         distribution: 'temurin'
         java-version: '21'
 
-    - name: Setup Android environment
-      uses: android-actions/setup-android@v3
+    - name: Setup Android SDK (preinstalled on runner)
+      run: |
+        echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+        echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+        yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses >/dev/null
+        /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
     - name: Download latest Mahsa-core AAR
       uses: robinraju/release-downloader@v1
