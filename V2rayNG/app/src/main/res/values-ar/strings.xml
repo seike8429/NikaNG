@@ -225,10 +225,6 @@
     <string name="summary_configuration_backup">موقع التخزين: [%s]، سيتم مسح النسخة الاحتياطية بعد إلغاء تثبيت التطبيق أو مسح التخزين</string>
     <string name="title_configuration_restore">استعادة التكوين</string>
     <string name="title_configuration_share">مشاركة التكوين</string>
-
-    <string name="title_pref_promotion">ترويج</string>
-    <string name="summary_pref_promotion">ترويج، انقر للحصول على التفاصيل (يمكن إزالة التبرع)</string>
-
     <string name="title_pref_auto_update_subscription">اشتراكات التحديث التلقائي</string>
     <string name="summary_pref_auto_update_subscription">قم بتحديث اشتراكاتك تلقائيًا بفترة زمنية في الخلفية. اعتمادًا على الجهاز، قد لا تعمل هذه الميزة دائمًا</string>
     <string name="title_pref_auto_update_interval">فاصل التحديث التلقائي (بالدقائق، الحد الأدنى للقيمة 15)</string>

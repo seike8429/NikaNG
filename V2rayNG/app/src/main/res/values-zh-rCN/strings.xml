@@ -219,10 +219,6 @@
     <string name="summary_configuration_backup">存储位置: [%s], 卸载App或清除存储后备份将被清除</string>
     <string name="title_configuration_restore">还原配置</string>
     <string name="title_configuration_share">分享配置</string>
-
-    <string name="title_pref_promotion">推广</string>
-    <string name="summary_pref_promotion">一些推广,点击查看详情(捐赠可去除)</string>
-
     <string name="title_pref_auto_update_subscription">自动更新订阅</string>
     <string name="summary_pref_auto_update_subscription">在后台按一定时间间隔自动更新您的订阅。受设备影响，此功能不一定总是有效</string>
     <string name="title_pref_auto_update_interval">自动更新间隔（分钟，最小值15）</string>
