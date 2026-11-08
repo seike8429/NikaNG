@@ -44,6 +44,32 @@ jobs:
         yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses >/dev/null
         /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
+    # FIX 2026-11-08 (run #4, attempts 1+2): the Gradle wrapper downloads
+    # Gradle 8.12 from services.gradle.org on EVERY run, and that download
+    # timed out twice in a row (SocketTimeoutException: Read timed out) before
+    # compile even started. Install Gradle 8.12 once with curl retries and
+    # cache the unzipped distribution, then run `gradle` directly instead
+    # of the wrapper — same version (8.12), no per-run download.
+    - name: Cache Gradle 8.12 distribution
+      id: cache-gradle
+      uses: actions/cache@v4
+      with:
+        path: ~/gradle-8.12
+        key: gradle-8.12-bin-${{ runner.os }}
+
+    - name: Install Gradle 8.12 (if not cached)
+      if: steps.cache-gradle.outputs.cache-hit != 'true'
+      run: |
+        curl -L --retry 5 --retry-delay 15 --retry-all-errors --fail \
+          -o /tmp/gradle-8.12-bin.zip \
+          https://services.gradle.org/distributions/gradle-8.12-bin.zip
+        unzip -q /tmp/gradle-8.12-bin.zip -d ~
+        rm /tmp/gradle-8.12-bin.zip
+        ~/gradle-8.12/bin/gradle --version
+
+    - name: Put Gradle 8.12 on PATH
+      run: echo "$HOME/gradle-8.12/bin" >> $GITHUB_PATH
+
     - name: Download latest Mahsa-core AAR
       uses: robinraju/release-downloader@v1
       with:
@@ -55,9 +81,8 @@ jobs:
     - name: Build signed APK (playstore flavor, package com.spiderproxyfinder.app)
       run: |
         cd ${{ github.workspace }}/V2rayNG
-        chmod 755 gradlew
-        ./gradlew licensePlaystoreReleaseReport
-        ./gradlew assemblePlaystoreRelease \
+        gradle licensePlaystoreReleaseReport
+        gradle assemblePlaystoreRelease \
           -Pandroid.injected.signing.store.file=${{ github.workspace }}/debug.keystore \
           -Pandroid.injected.signing.store.password=android \
           -Pandroid.injected.signing.key.alias=androiddebugkey \
