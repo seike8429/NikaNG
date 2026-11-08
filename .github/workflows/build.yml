@@ -1,0 +1,88 @@
+# Spider Proxy Finder v2 — CI build
+# Adapted from NikaNG build4.yml. Differences:
+# - triggers on push to main (not workflow_dispatch-only)
+# - signs with the COMMITTED debug.keystore at repo root (same key as v1,
+#   so v2 installs over v1 without uninstall) — no Actions secrets needed
+# - builds the PLAYSTORE flavor (its applicationId is com.spiderproxyfinder.app,
+#   the same as v1; the fdroid flavor appends ".fdroid" and would NOT upgrade v1)
+# - uploads per-ABI APKs + universal APK as artifacts
+# NOTE: this file must be added via the GitHub web UI — the API token used
+# for syncing lacks `workflow` scope and cannot push .github/ contents.
+
+name: Build Spider Proxy Finder APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+
+    - name: Setup Android environment
+      uses: android-actions/setup-android@v3
+
+    - name: Download latest Mahsa-core AAR
+      uses: robinraju/release-downloader@v1
+      with:
+        repository: 'GFW-knocker/AndroidLibXrayLite'
+        latest: true
+        fileName: 'libv2ray.aar'
+        out-file-path: '${{ github.workspace }}/V2rayNG/app/libs/'
+
+    - name: Build signed APK (playstore flavor, package com.spiderproxyfinder.app)
+      run: |
+        cd ${{ github.workspace }}/V2rayNG
+        chmod 755 gradlew
+        ./gradlew licensePlaystoreReleaseReport
+        ./gradlew assemblePlaystoreRelease \
+          -Pandroid.injected.signing.store.file=${{ github.workspace }}/debug.keystore \
+          -Pandroid.injected.signing.store.password=android \
+          -Pandroid.injected.signing.key.alias=androiddebugkey \
+          -Pandroid.injected.signing.key.password=android
+
+    - name: Upload arm64-v8a APK
+      uses: actions/upload-artifact@v4
+      if: ${{ success() }}
+      with:
+        name: arm64-v8a
+        path: ${{ github.workspace }}/V2rayNG/app/build/outputs/apk/playstore/release/*arm64-v8a*.apk
+
+    - name: Upload armeabi-v7a APK
+      uses: actions/upload-artifact@v4
+      if: ${{ success() }}
+      with:
+        name: armeabi-v7a
+        path: ${{ github.workspace }}/V2rayNG/app/build/outputs/apk/playstore/release/*armeabi-v7a*.apk
+
+    - name: Upload x86 APK
+      uses: actions/upload-artifact@v4
+      if: ${{ success() }}
+      with:
+        name: x86-apk
+        path: ${{ github.workspace }}/V2rayNG/app/build/outputs/apk/playstore/release/*x86*.apk
+
+    - name: Upload x86_64 APK
+      uses: actions/upload-artifact@v4
+      if: ${{ success() }}
+      with:
+        name: x86_64-apk
+        path: ${{ github.workspace }}/V2rayNG/app/build/outputs/apk/playstore/release/*x86_64*.apk
+
+    - name: Upload universal APK
+      uses: actions/upload-artifact@v4
+      if: ${{ success() }}
+      with:
+        name: universal
+        path: ${{ github.workspace }}/V2rayNG/app/build/outputs/apk/playstore/release/*universal*.apk
