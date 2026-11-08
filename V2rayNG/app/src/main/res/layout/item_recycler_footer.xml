@@ -20,13 +20,10 @@
             android:gravity="center|left"
             android:orientation="vertical"
             android:paddingBottom="@dimen/layout_margin_top_height">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/summary_pref_promotion"
-                android:textAppearance="@style/TextAppearance.AppCompat.Tooltip"
-                android:textColor="@color/color_secondary" />
+            <!-- Promo text removed with the rebrand: the footer is always
+                 INVISIBLE (MainRecyclerAdapter) and its string
+                 (summary_pref_promotion) no longer exists, so the
+                 reference broke resource linking. -->
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
