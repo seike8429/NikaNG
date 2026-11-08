@@ -7,6 +7,7 @@ import com.spiderproxyfinder.app.util.PluginUtil
 import com.spiderproxyfinder.app.util.SpeedtestUtil
 import com.spiderproxyfinder.app.util.Utils
 import go.Seq
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
