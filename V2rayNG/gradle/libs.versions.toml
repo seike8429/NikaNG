@@ -19,7 +19,8 @@ quickieBundled = "1.10.0"
 
 rxjava = "3.1.10"
 rxandroid = "3.0.2"
-rxpermissions = "0.12"
+fragment = "1.8.5"
+annotation = "1.9.1"
 swiperefreshlayout = "1.1.0"
 toastcompat = "1.1.0"
 editorkit = "2.9.0"
@@ -51,7 +52,8 @@ quickie-bundled = { module = "io.github.g00fy2.quickie:quickie-bundled", version
 
 rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
 rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }
-rxpermissions = { module = "com.github.tbruyelle:rxpermissions", version.ref = "rxpermissions" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
+androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
 toastcompat = { module = "me.drakeet.support:toastcompat", version.ref = "toastcompat" }
 editorkit = { module = "com.blacksquircle.ui:editorkit", version.ref = "editorkit" }
 language-base = { module = "com.blacksquircle.ui:language-base", version.ref = "editorkit" }

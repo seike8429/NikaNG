@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "SpiderProxyFinder"
 include(":app")
+include(":rxpermissions")
